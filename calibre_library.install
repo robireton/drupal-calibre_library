@@ -1,0 +1,9 @@
+<?php
+
+function calibre_library_install() {
+  variable_set('calibre_library_last_cron', 0);
+}
+
+function calibre_library_uninstall() {
+  variable_del('calibre_library_last_cron');
+}

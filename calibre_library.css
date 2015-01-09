@@ -1,0 +1,146 @@
+div.book-subtitle{
+  position: relative;
+  top: -1.25em;
+  font-style: italic;
+}
+
+div.book-authors {
+  margin: 0 0 1.62em 0;
+  font-size: 138%;
+}
+
+div.book-cover {
+  width: 37%;
+  float: left;
+  margin: 0 2% 1em 0;
+}
+
+div.book-cover img {
+  width: 100%;
+  height: auto;
+  box-shadow: 3px 3px 9px rgba(0,0,0,0.382);
+}
+
+table.book-metadata {
+  width: 61%;
+  background: none;
+  font-family: inherit;
+  font-size: 1em;
+  border-collapse: collapse;
+  margin-top: 0;
+}
+
+table.book-metadata tbody {
+  background: none;
+}
+
+table.book-metadata tbody tr {
+  background: none;
+}
+
+table.book-metadata tbody tr th {
+  border-top: 1px solid rgba(0,0,0,0.382);
+  border-bottom: 1px solid rgba(0,0,0,0.382);
+  background: none;
+  color: black;
+  vertical-align: top;
+  text-align: left;
+  font-weight: normal;
+  padding: 0.25em 1em 0.5em 1em;
+}
+
+table.book-metadata tbody tr td {
+  border-top: 1px solid rgba(0,0,0,0.382);
+  border-bottom: 1px solid rgba(0,0,0,0.382);
+  background: none;
+  color: black;
+  vertical-align: top;
+  text-align: left;
+  font-weight: normal;
+  padding: 0.25em 0 0.5em 1em;
+}
+
+table.book-metadata tbody tr td a {
+  white-space: nowrap;
+}
+
+div.book-file {
+  margin: 2em 0;
+  text-align: right;
+}
+
+div.book-description {
+  clear: left;
+  margin-top: 1em;
+  border-top: 1px solid rgba(0,0,0,0.382);
+  padding: 1em 0;
+}
+
+table.book-list {
+  font-size: inherit;
+  font-family: inherit;
+}
+
+table.book-list td {
+  text-align: left;
+  vertical-align: top;
+}
+
+table.book-list td.image {
+  width: 120px;
+}
+
+table.book-list td.image img {
+  width: 100%;
+  height: auto;
+}
+
+table.book-list td.title {
+  vertical-align: baseline;
+}
+
+table.book-list td.title a {
+  font-size: 162%;
+}
+
+table.book-list td.title span.subtitle {
+  font-style: italic;
+}
+
+table.book-list td.pubdate {
+  text-align: right;
+  font-size: 162%;
+}
+
+ul.author-list {
+  -webkit-column-count: 2;
+  -moz-column-count: 2;
+  column-count: 2;
+}
+
+ul.author-list a {
+  font-size: 138%;
+  padding-right: 0.5em;
+}
+
+
+ul.tag-list {
+  -webkit-column-count: 2;
+  -moz-column-count: 2;
+  column-count: 2;
+}
+
+ul.tag-list a {
+  padding-right: 0.5em;
+}
+
+ul.series-list {
+  -webkit-column-count: 2;
+  -moz-column-count: 2;
+  column-count: 2;
+}
+
+ul.series-list a {
+  font-size: 138%;
+  padding-right: 0.5em;
+}

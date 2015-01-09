@@ -1,0 +1,13 @@
+<?php
+
+module_load_include('inc', 'calibre_library', 'menu');
+module_load_include('inc', 'calibre_library', 'permission');
+module_load_include('inc', 'calibre_library', 'search');
+
+module_load_include('inc', 'calibre_library', 'catalog');
+module_load_include('inc', 'calibre_library', 'book');
+module_load_include('inc', 'calibre_library', 'author');
+module_load_include('inc', 'calibre_library', 'series');
+module_load_include('inc', 'calibre_library', 'tag');
+
+module_load_include('inc', 'calibre_library', 'common');
