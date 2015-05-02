@@ -44,7 +44,7 @@ function calibre_book_load($id) {
     $series_index = ($record['series_index'] == intval($record['series_index'])) ? intval($record['series_index']) : $record['series_index'];
     $book['text'] = $record['text'];
     $path = $record['path'];
-    if ($record['has_cover']) $book['cover'] = "public://calibre_server/{$path}/cover.jpg";
+    if ($record['has_cover']) $book['cover'] = "public://calibre_library/{$path}/cover.jpg";
   }
 
   if ($book['id']) {
@@ -70,7 +70,7 @@ function calibre_book_load($id) {
     }
 
     foreach (db_query('SELECT format, name FROM {data} WHERE book = :id', array(':id' => intval($id)), array('fetch' => PDO::FETCH_ASSOC)) as $file) {
-      $book['files'][] = array('format' => $file['format'], 'uri' => sprintf('public://calibre_server/%s/%s.%s', $path, $file['name'], strtolower($file['format'])) );
+      $book['files'][] = array('format' => $file['format'], 'uri' => sprintf('public://calibre_library/%s/%s.%s', $path, $file['name'], strtolower($file['format'])) );
     }
   }
   db_set_active();

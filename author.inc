@@ -44,7 +44,7 @@ function calibre_library_author_view($id) {
     $title_parts = explode(':', $book['title'], 2);
     $pubdate = $book['pubdate'] ? new DateTime($book['pubdate']) : FALSE;
     $content[] = array('#markup' => sprintf('<tr><td class="image">%s</td><td class="title">%s%s</td><td class="pubdate">%s</td></tr>',
-      $book['has_cover'] ? sprintf('<img src="%s">', file_create_url("public://calibre_server/{$book['path']}/cover.jpg")) : '',
+      $book['has_cover'] ? sprintf('<img src="%s">', file_create_url("public://calibre_library/{$book['path']}/cover.jpg")) : '',
       sprintf('<a href="/library/book/%u">%s</a>', $book['id'], trim($title_parts[0])),
       count($title_parts) > 1 ? sprintf(': <span class="subtitle">%s</span>', trim($title_parts[1])) : '',
       $book['pubdate'] ? sprintf('<time datetime="%s">%s</time>', $pubdate->format('Y-m-d'), $pubdate->format('Y')) : ''

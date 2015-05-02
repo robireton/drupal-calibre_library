@@ -70,7 +70,7 @@ function calibre_library_series_view($id) {
     $pubdate = $book['pubdate'] ? new DateTime($book['pubdate']) : FALSE;
     $list[] = array('#markup' => sprintf('<tr><th>%s</th><td class="image">%s</td><td class="title">%s%s</td><td class="pubdate">%s</td></tr>',
       $book['series_index'] == intval($book['series_index']) ? intval($book['series_index']) : $book['series_index'],
-      $book['has_cover'] ? sprintf('<img src="%s">', file_create_url("public://calibre_server/{$book['path']}/cover.jpg")) : '',
+      $book['has_cover'] ? sprintf('<img src="%s">', file_create_url("public://calibre_library/{$book['path']}/cover.jpg")) : '',
       sprintf('<a href="/library/book/%u">%s</a>', $book['id'], trim($title_parts[0])),
       count($title_parts) > 1 ? sprintf(': <span class="subtitle">%s</span>', trim($title_parts[1])) : '',
       $book['pubdate'] ? sprintf('<time datetime="%s">%s</time>', $pubdate->format('Y-m-d'), $pubdate->format('Y')) : ''
