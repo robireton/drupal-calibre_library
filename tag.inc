@@ -2,7 +2,7 @@
 
 function calibre_library_tags_list() {
   drupal_add_css(drupal_get_path('module', 'calibre_library') . '/calibre_library.css', array('group' => CSS_DEFAULT, 'every_page' => FALSE));
-  drupal_set_title('Tags');
+  drupal_set_title('Library Catalog');
 
   $sections = array();
   db_set_active('calibre');

@@ -12,6 +12,16 @@ function calibre_library_menu(){
       'page callback'     => 'calibre_library_catalog_view',
      ),
 
+     'library/new' => array(
+       'type'              => MENU_DEFAULT_LOCAL_TASK,
+       'title'             => 'New',
+       'description'       => 'Latest additions to the Catalog',
+       'access callback'   => 'user_access',
+       'access arguments'  => array('calibre_library_view_catalog'),
+       'page callback'     => 'calibre_library_catalog_view',
+       'weight'            => -10,
+      ),
+
     'library/book/%' => array(
       'type'              => MENU_CALLBACK,
       'title'             => 'Book',
@@ -23,7 +33,7 @@ function calibre_library_menu(){
      ),
 
      'library/authors' => array(
-       'type'              => MENU_NORMAL_ITEM,
+       'type'              => MENU_LOCAL_TASK,
        'title'             => 'Authors',
        'description'       => 'List of authors in the collection',
        'access callback'   => 'user_access',
@@ -42,7 +52,7 @@ function calibre_library_menu(){
      ),
 
      'library/tags' => array(
-       'type'              => MENU_NORMAL_ITEM,
+       'type'              => MENU_LOCAL_TASK,
        'title'             => 'Tags',
        'description'       => 'List of tags in the collection',
        'access callback'   => 'user_access',
@@ -61,7 +71,7 @@ function calibre_library_menu(){
      ),
 
      'library/series' => array(
-       'type'              => MENU_NORMAL_ITEM,
+       'type'              => MENU_LOCAL_TASK,
        'title'             => 'Series',
        'description'       => 'List of series in the collection',
        'access callback'   => 'user_access',
