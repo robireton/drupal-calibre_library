@@ -2,3 +2,4 @@ name = "Calibre Library"
 description = "View your Calibre library in Drupal."
 package = "Calibre"
 core = 7.x
+version=7.x-2.0

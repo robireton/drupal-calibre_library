@@ -1,13 +1,219 @@
 <?php
 
-module_load_include('inc', 'calibre_library', 'menu');
-module_load_include('inc', 'calibre_library', 'permission');
-module_load_include('inc', 'calibre_library', 'search');
+function calibre_library_menu(){
+  return [
+    'library' => [
+      'type'              => MENU_NORMAL_ITEM,
+      'title'             => t('Library'),
+      'description'       => t('Catalog Home'),
+      'access callback'   => 'user_access',
+      'access arguments'  => ['calibre_library_view_catalog'],
+      'page callback'     => 'calibre_library_catalog_view',
+      'file'              => 'calibre_library.catalog.inc',
+     ],
 
-module_load_include('inc', 'calibre_library', 'catalog');
-module_load_include('inc', 'calibre_library', 'book');
-module_load_include('inc', 'calibre_library', 'author');
-module_load_include('inc', 'calibre_library', 'series');
-module_load_include('inc', 'calibre_library', 'tag');
+     'library/new' => [
+       'type'              => MENU_DEFAULT_LOCAL_TASK,
+       'title'             => t('New'),
+       'description'       => t('Latest additions to the Catalog'),
+       'access callback'   => 'user_access',
+       'access arguments'  => ['calibre_library_view_catalog'],
+       'page callback'     => 'calibre_library_catalog_view',
+       'file'              => 'calibre_library.catalog.inc',
+       'weight'            => -10,
+      ],
 
-module_load_include('inc', 'calibre_library', 'common');
+    'library/book/%' => [
+      'type'              => MENU_CALLBACK,
+      'title'             => t('Book'),
+      'description'       => t('Book Information'),
+      'access callback'   => 'user_access',
+      'access arguments'  => ['calibre_library_view_catalog'],
+      'page callback'     => 'calibre_library_book_view',
+      'file'              => 'calibre_library.book.inc',
+      'page arguments'    => [2],
+     ],
+
+     'library/authors' => [
+       'type'              => MENU_LOCAL_TASK,
+       'title'             => t('Authors'),
+       'description'       => t('List of authors in the collection'),
+       'access callback'   => 'user_access',
+       'access arguments'  => ['calibre_library_view_catalog'],
+       'page callback'     => 'calibre_library_authors_list',
+       'file'              => 'calibre_library.author.inc',
+     ],
+
+     'library/author/%' => [
+      'type'              => MENU_CALLBACK,
+      'title'             => t('Author'),
+      'description'       => t('Books by Author'),
+      'access callback'   => 'user_access',
+      'access arguments'  => ['calibre_library_view_catalog'],
+      'page callback'     => 'calibre_library_author_view',
+      'file'              => 'calibre_library.author.inc',
+      'page arguments'    => [2],
+     ],
+
+     'library/tags' => [
+       'type'              => MENU_LOCAL_TASK,
+       'title'             => t('Tags'),
+       'description'       => t('List of tags in the collection'),
+       'access callback'   => 'user_access',
+       'access arguments'  => ['calibre_library_view_catalog'],
+       'page callback'     => 'calibre_library_tags_list',
+       'file'              => 'calibre_library.tag.inc',
+     ],
+
+     'library/tag/%' => [
+      'type'              => MENU_CALLBACK,
+      'title'             => t('Tag'),
+      'description'       => t('Books by tag'),
+      'access callback'   => 'user_access',
+      'access arguments'  => ['calibre_library_view_catalog'],
+      'page callback'     => 'calibre_library_tag_view',
+      'file'              => 'calibre_library.tag.inc',
+      'page arguments'    => [2],
+     ],
+
+     'library/series' => [
+       'type'              => MENU_LOCAL_TASK,
+       'title'             => t('Series'),
+       'description'       => t('List of series in the collection'),
+       'access callback'   => 'user_access',
+       'access arguments'  => ['calibre_library_view_catalog'],
+       'page callback'     => 'calibre_library_series_list',
+       'file'              => 'calibre_library.series.inc',
+     ],
+
+    'library/series/%' => [
+      'type'              => MENU_CALLBACK,
+      'title'             => t('Series'),
+      'description'       => t('Books by series'),
+      'access callback'   => 'user_access',
+      'access arguments'  => ['calibre_library_view_catalog'],
+      'page callback'     => 'calibre_library_series_view',
+      'file'              => 'calibre_library.series.inc',
+      'page arguments'    => [2],
+     ],
+  ];
+}
+
+
+function calibre_library_permission() {
+  return [
+    'calibre_library_view_catalog' => [
+      'title'       => t('View Library Catalog'),
+      'description' => t('View listings and metadata for books in the Library.'),
+    ],
+    'calibre_library_download_books' => [
+      'title'       => t('Download Library Books'),
+      'description' => t('Download books from the Library collection.'),
+    ],
+  ];
+}
+
+
+function calibre_library_search_info() {
+  return [
+    'title' => 'Books',
+    'path' => 'library',
+    'conditions_callback' => 'callback_search_conditions',
+  ];
+}
+
+
+function calibre_library_update_index() {
+  $limit = 5;
+  // $limit = (int) variable_get('search_cron_limit', 100);
+
+  $reindex = [];
+  foreach (db_query("SELECT sid, reindex FROM {search_dataset} WHERE type = 'calibre_book'", [], ['fetch' => PDO::FETCH_ASSOC]) as $result) {
+    $reindex[intval($result['sid'])] = boolval($result['reindex']);
+  }
+
+  $bookIDs = [];
+  db_set_active('calibre');
+  foreach (db_query("SELECT id FROM {books} ORDER BY last_modified", [], ['fetch' => PDO::FETCH_ASSOC]) as $result) {
+    $id = intval($result['id']);
+    if (!array_key_exists($id, $reindex) || $reindex[$id]) $bookIDs[] = $id;
+    if (count($bookIDs) >= $limit) break;
+  }
+  db_set_active();
+
+  foreach ($bookIDs as $id) {
+    $book = calibre_book_load($id);
+    $content = calibre_book_build_content($book, 'search_index');
+    $html = drupal_render($content);
+    $title = '<h1>' . check_plain($book['title']) . '</h1>';
+
+    search_index($id, 'calibre_book', $title . $html);
+  }
+}
+
+
+function calibre_library_search_execute($keys = NULL, $conditions = NULL) {
+  // Build matching conditions
+  $query = db_select('search_index', 'i', ['target' => 'slave'])->extend('SearchQuery')->extend('PagerDefault');
+  //$query->join('node', 'n', 'n.nid = i.sid');
+  $query->searchExpression($keys, 'calibre_book');
+
+  // Insert special keywords.
+  $query->setOption('type', 'calibre_book');
+  //$query->setOption('language', 'n.language');
+  //if ($query->setOption('term', 'ti.tid')) {
+    //$query->join('taxonomy_index', 'ti', 'n.nid = ti.nid');
+  //}
+  // Only continue if the first pass query matches.
+  if (!$query->executeFirstPass()) {
+    return [];
+  }
+
+  // Add the ranking expressions.
+  _node_rankings($query);
+
+  // Load results.
+  $find = $query->limit(10)->execute();
+
+  $results = [];
+
+  foreach ($find as $item) {
+    // Render the node.
+    $book = calibre_book_load($item->sid);
+    $build = calibre_book_build_content($book, 'search_result');
+    unset($build['#theme']);
+    $html = drupal_render($build);
+
+    $results[] = [
+      'link'     => url("library/book/{$book['id']}"),
+      'type'     => 'Book',
+      'title'    => $book['title'],
+      'user'     => '',
+      'date'     => $book['added']->getTimestamp(),
+      'score'    => $item->calculated_score,
+      'snippet'  => search_excerpt($keys, $html),
+      'language' => 'en',
+    ];
+  }
+
+  return $results;
+}
+
+
+function calibre_library_cron() {
+  $now = time();
+  $last_indexed = (int) variable_get('calibre_library_last_cron', 0);
+
+  $bookIDs = [];
+  db_set_active('calibre');
+  foreach (db_query("SELECT id FROM {books} WHERE CAST(strftime('%s', last_modified) AS INTEGER) >= :last_indexed", [':last_indexed' => $last_indexed], ['fetch' => PDO::FETCH_ASSOC]) as $result) {
+    $bookIDs[] = $result['id'];
+  }
+  db_set_active();
+
+  if (count($bookIDs)) {
+    db_query("UPDATE {search_dataset} SET reindex = 1 WHERE type = 'calibre_book' AND sid IN(:ids)", [':ids' => $bookIDs]);
+  }
+
+  variable_set('calibre_library_last_cron', $now);
+}
